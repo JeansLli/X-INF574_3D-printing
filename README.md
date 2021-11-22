@@ -10,3 +10,7 @@
 8. Deforming.
 9. Repeat from step 4 and step 8 until convergence.
 
+
+Note that for compilation libigl is required. It can be downloaded from source here: https://github.com/libigl/libigl
+Note that with our cmake, the location of the folder is not important.
+
