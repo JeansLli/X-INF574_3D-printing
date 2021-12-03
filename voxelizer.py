@@ -72,8 +72,11 @@ voxel_resolution = 64.0
 voxel_grid, voxel_carving, voxel_surface = voxel_carving(
     mesh, output_filename, camera_path, cubic_size, voxel_resolution)
 
-#import pdb
-#pdb.set_trace()
+open3d.io.write_voxel_grid(output_filename,voxel_grid)
+
+
+import pdb
+pdb.set_trace()
 
 print("surface voxels")
 print(voxel_surface)
