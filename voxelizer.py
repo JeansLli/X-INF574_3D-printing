@@ -1,8 +1,10 @@
-from numpy.core.defchararray import index
 import open3d as o3d
 import numpy as np
 import pdb
 import json
+import os
+
+from carve_voxel import voxel_carving
 
 def read_mesh(path):
     """
@@ -20,32 +22,21 @@ def read_mesh(path):
         return(mesh)
 
 
-def voxel_inside(voxel_grid, voxel):
-    """ 
-    Input: A voxel grid and one voxel with x,y,z coordinates in the grid. 
-    Output: boolean whether the voxel is inside or outside.
-    We will shoot a ray in all 6 directions starting from the voxel. If each ray hits a voxel in the boundary, we say that the point is inside.
-    Note that this is a limitation. For fine meshes, where we have a "blister", that turns to the inside, this algorithm can fail.
-    """
-    pass
-
 def voxelizer(mesh_path, scale, size, gap):
     """
     scale: the scale of bounding box of mesh
-    size: the size of cubic<y
+    size: the size of cubic
+    gap: the number of cubic between the interior and surface.
+
     """
     mesh = read_mesh(mesh_path)
     mesh.scale(scale / np.max(mesh.get_max_bound() - mesh.get_min_bound()),center=mesh.get_center())
     voxel_grid = o3d.geometry.VoxelGrid.create_from_triangle_mesh(mesh,voxel_size=size)
     N_axis = int(scale / size)
-    #N_axis is the number of voxels we want to have per axis.
-    #The voxel_matrix is a N_axis x N_axis x N_axis matrix, i.e a 3-D grid. The value of each gridpoint will indicate whether the point is included  
     voxel_matrix = np.zeros((N_axis,N_axis,N_axis))
-    #matrix that will store all the voxels, that are mot in the boundary. This will be the one, which we will carve
-    inner_voxels = np.zeros((N_axis,N_axis,N_axis))
     #pdb.set_trace()
-    center_point = voxel_grid.get_center() # the geometric coordinates
-    center_index = voxel_grid.get_voxel(center_point) 
+    center_point = voxel_grid.get_center()
+    center_index = voxel_grid.get_voxel(center_point)
     print("center point",center_point)
     print("center_index",center_index)
     
@@ -55,43 +46,9 @@ def voxelizer(mesh_path, scale, size, gap):
         voxel_matrix[a[0]-1,a[1]-1,a[2]-1] = 1
     print("before fill=",voxel_matrix.sum())
     before_voxel = voxel_matrix
-    #Try to color the voxel grid a little bit
-    """
-    print('type of voxel grid item',voxel_grid.get_voxels()[0].grid_index[0])
-    for idx in range(len(voxel_grid.get_voxels())):
-        if(voxel_grid.get_voxels()[idx].grid_index[0]<5):
-            voxel_grid.get_voxels()[0].color = np.array([255.,0.,0.], np.float)
-    """
-    # to fill the inside voxel 
-    for i in range(N_axis):
-        for j in range(N_axis): 
-            start = 0
-            end = N_axis-1 
-            for k in range(N_axis):
-                if(voxel_matrix[i,j,k]==1):
-                    start = k
-                    break;
-            for k in range(N_axis):
-                if(voxel_matrix[i,j,N_axis-k-1]==1):
-                    end = N_axis-k-1
-                    break
-            for k in range(start, end+1):
-                if(k<(start+gap) or k>(end-gap)):
-                    voxel_matrix[i,j,k] = 0
-                    #print("gap",k)
-                else:
-                    voxel_matrix[i,j,k] = 1
-            #print("------------")
 
-            #if(start ==0 and end==N_axis-1):
-            #    print("warning",i,j)
     print("after fill = ", voxel_matrix.sum())
-    o3d.visualization.draw_geometries([voxel_grid])
-
-    #find one voxel inside the mesh
-    #take a voxel on the surface. Then one of the 6 neigbours will be in the inside of the mesh. Check this by shooting from that point a ray in all 6 directions.
-    #then start a bfs from this inner voxel to determine all inner voxel points.
-    
+    #o3d.visualization.draw_geometries([voxel_grid])
     #pdb.set_trace()
     voxel = { 
         "mesn_file" : mesh_path,
@@ -104,14 +61,39 @@ def voxelizer(mesh_path, scale, size, gap):
     } 
     return voxel
 
-mesh_path = "./data/bunny_flipped_2.obj"
+mesh_path = "./data/bunny.obj"
+mesh = o3d.io.read_triangle_mesh(mesh_path)
+output_filename = os.path.abspath("./data/voxelized.ply")
+camera_path = os.path.abspath("./data/sphere.ply")
+visualization = True
+cubic_size = 2.0
+voxel_resolution = 64.0
 
-voxel = voxelizer(mesh_path, 10, 0.2, 2)
+voxel_grid, voxel_carving, voxel_surface = voxel_carving(
+    mesh, output_filename, camera_path, cubic_size, voxel_resolution)
+
+#import pdb
+#pdb.set_trace()
+
+print("surface voxels")
+print(voxel_surface)
+o3d.visualization.draw_geometries([voxel_surface])
+
+print("carved voxels")
+print(voxel_carving)
+o3d.visualization.draw_geometries([voxel_carving])
+
+print("combined voxels (carved + surface)")
+print(voxel_grid)
+o3d.visualization.draw_geometries([voxel_grid])
+
+
+#voxel = voxelizer(mesh_path, 10, 0.5, 2)
 ## the length of bounding box is 1/0.05=20
 
 
-file_name = "./data/voxel_new.json"
+#file_name = "./data/voxel.json"
 
-with open(file_name, "w", encoding='utf-8') as f:
-    #json.dump(voxel_matrix.tolist(),f,separators=(',', ':'))
-    json.dump(voxel, f, indent=4)
+#with open(file_name, "w", encoding='utf-8') as f:
+#    #json.dump(voxel_matrix.tolist(),f,separators=(',', ':'))
+#    json.dump(voxel, f, indent=4)
