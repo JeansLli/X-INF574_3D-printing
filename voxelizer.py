@@ -1,3 +1,4 @@
+from numpy.core.defchararray import index
 import open3d as o3d
 import numpy as np
 import pdb
@@ -54,7 +55,13 @@ def voxelizer(mesh_path, scale, size, gap):
         voxel_matrix[a[0]-1,a[1]-1,a[2]-1] = 1
     print("before fill=",voxel_matrix.sum())
     before_voxel = voxel_matrix
-
+    #Try to color the voxel grid a little bit
+    """
+    print('type of voxel grid item',voxel_grid.get_voxels()[0].grid_index[0])
+    for idx in range(len(voxel_grid.get_voxels())):
+        if(voxel_grid.get_voxels()[idx].grid_index[0]<5):
+            voxel_grid.get_voxels()[0].color = np.array([255.,0.,0.], np.float)
+    """
     # to fill the inside voxel 
     for i in range(N_axis):
         for j in range(N_axis): 
@@ -97,9 +104,9 @@ def voxelizer(mesh_path, scale, size, gap):
     } 
     return voxel
 
-mesh_path = "./data/bunny.obj"
+mesh_path = "./data/bunny_flipped_2.obj"
 
-voxel = voxelizer(mesh_path, 10, 0.5, 2)
+voxel = voxelizer(mesh_path, 10, 0.2, 2)
 ## the length of bounding box is 1/0.05=20
 
 
