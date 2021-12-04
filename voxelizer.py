@@ -3,6 +3,7 @@ import numpy as np
 import pdb
 import json
 import os
+import pdb
 
 from carve_voxel import voxel_carving
 
@@ -61,22 +62,36 @@ def voxelizer(mesh_path, scale, size, gap):
     } 
     return voxel
 
-mesh_path = "./data/bunny.obj"
+
+mesh_path = "./data/bunny_flipped_2.obj"
 mesh = o3d.io.read_triangle_mesh(mesh_path)
-output_filename = os.path.abspath("./data/voxelized.ply")
+output_voxel_filename = os.path.abspath("./data/bunny_flipped_2_voxelized.obj")
+output_mesh_filename =os.path.abspath("./data/bunny_flipped_2_scaled.obj")
 camera_path = os.path.abspath("./data/sphere.ply")
+np_file = "./data/bunny_flipped_2_voxel"
+json_filename = "./data/bunny_flipped_2_voxel.json"
+
 visualization = True
-cubic_size = 2.0
-voxel_resolution = 64.0
+cubic_size = 2.56 # 64 * 0.04
+voxel_resolution = 64.0 #
+mesh_scale = 8.0
 
-voxel_grid, voxel_carving, voxel_surface = voxel_carving(
-    mesh, output_filename, camera_path, cubic_size, voxel_resolution)
+mesh, voxel_grid, voxel_carving, voxel_surface = voxel_carving(
+    mesh, output_voxel_filename, camera_path, cubic_size, voxel_resolution)
 
-open3d.io.write_voxel_grid(output_filename,voxel_grid)
+# We can directly zoom out mesh a little bit 
+# to make sure that the voxel is inside
+mesh.scale(mesh_scale, center=mesh.get_center())
+
+o3d.io.write_voxel_grid(output_voxel_filename,voxel_grid)
+o3d.io.write_triangle_mesh(output_mesh_filename, mesh)
+
+#pdb.set_trace()
 
 
-import pdb
-pdb.set_trace()
+print("surface mesh")
+print(mesh)
+o3d.visualization.draw_geometries([mesh])
 
 print("surface voxels")
 print(voxel_surface)
@@ -94,9 +109,28 @@ o3d.visualization.draw_geometries([voxel_grid])
 #voxel = voxelizer(mesh_path, 10, 0.5, 2)
 ## the length of bounding box is 1/0.05=20
 
+N_index = int(voxel_resolution)
+voxel_matrix = np.zeros((N_index,N_index,N_index))
 
-#file_name = "./data/voxel.json"
+for i in voxel_grid.get_voxels(): # index is from 1 to scale/size
+    #print(i.grid_index)
+    voxel_index = i.grid_index #a[0] a[1] a[2]
+    voxel_matrix[voxel_index[0]-1,voxel_index[1]-1,voxel_index[2]-1] = 1
 
-#with open(file_name, "w", encoding='utf-8') as f:
-#    #json.dump(voxel_matrix.tolist(),f,separators=(',', ':'))
-#    json.dump(voxel, f, indent=4)
+
+
+voxel_write = { 
+        "mesn_file" : output_mesh_filename,
+        "voxel_origin" : (mesh_scale*(voxel_grid.origin)).tolist(), 
+        "voxel_edge": cubic_size/voxel_resolution*mesh_scale,
+        "voxel_matrix" : np.array(voxel_matrix, dtype=bool).tolist()
+    } 
+# voxel_edge is the edge length for each voxel
+
+
+with open(json_filename, "w", encoding='utf-8') as f:
+    json.dump(voxel_write, f, indent=4)
+
+np.save(file=np_file,arr=np.array(voxel_matrix, dtype=bool))
+
+

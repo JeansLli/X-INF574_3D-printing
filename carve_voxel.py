@@ -2,7 +2,7 @@ import numpy as np
 import open3d as o3d
 #import open3d_tutorial as o3dtut
 import os
-
+import pdb
 
 def xyz_spherical(xyz):
     x = xyz[0]
@@ -37,7 +37,9 @@ def preprocess(model):
     max_bound = model.get_max_bound()
     center = min_bound + (max_bound - min_bound) / 2.0
     scale = np.linalg.norm(max_bound - min_bound) / 2.0
+    #scale = (max_bound - min_bound) / 2.0 / (cubic_size / 2.0 * 0.75)
     vertices = np.asarray(model.vertices)
+    #pdb.set_trace()
     vertices -= center
     model.vertices = o3d.utility.Vector3dVector(vertices / scale)
     return model
@@ -123,39 +125,8 @@ def voxel_carving(mesh,
         raise Exception('invalid surface method')
     voxel_carving_surface = voxel_surface + voxel_carving
 
-    return voxel_carving_surface, voxel_carving, voxel_surface
+    return mesh, voxel_carving_surface, voxel_carving, voxel_surface
 
 
 #mesh = o3dtut.get_armadillo_mesh()
 
-'''
-mesh_path = "./data/bunny.obj"
-mesh = o3d.io.read_triangle_mesh(mesh_path)
-mesh.scale(1 / np.max(mesh.get_max_bound() - mesh.get_min_bound()), center=mesh.get_center())
-#o3d.visualization.draw_geometries([mesh])
-#mesh = o3dtut.get_armadillo_mesh()
-
-output_filename = os.path.abspath("./data/voxelized.ply")
-camera_path = os.path.abspath("./data/sphere.ply")
-visualization = True
-cubic_size = 2.0
-voxel_resolution = 64.0
-
-voxel_grid, voxel_carving, voxel_surface = voxel_carving(
-    mesh, output_filename, camera_path, cubic_size, voxel_resolution)
-
-#import pdb
-#pdb.set_trace()
-
-print("surface voxels")
-print(voxel_surface)
-o3d.visualization.draw_geometries([voxel_surface])
-
-print("carved voxels")
-print(voxel_carving)
-o3d.visualization.draw_geometries([voxel_carving])
-
-print("combined voxels (carved + surface)")
-print(voxel_grid)
-o3d.visualization.draw_geometries([voxel_grid])
-'''
