@@ -27,6 +27,7 @@ def read_mesh(path):
 
 def voxelizer(mesh_path, scale, size, gap):
     """
+    NOTE: we don't use it anymore
     scale: the scale of bounding box of mesh
     size: the size of cubic
     gap: the number of cubic between the interior and surface.
@@ -146,7 +147,9 @@ def center_of_mass(voxels_np):
                     center = (1/float(counter))*np.array([float(id_x),float(id_y),float(id_z)]) + (float(counter-1)/float(counter))*center
 
     return([int(center[0]),int(center[1]),int(center[2])]) 
-    
+
+
+
 
 mesh_path = "./data/bunny_flipped_3.obj"
 mesh = o3d.io.read_triangle_mesh(mesh_path)
@@ -159,7 +162,7 @@ json_filename = "./data/bunny_flipped_3_voxel.json"
 visualization = True
 cubic_size = 2.56 # 64 * 0.04
 voxel_resolution = 128.0 #
-mesh_scale = 20.0
+mesh_scale = 10.0
 
 mesh, voxel_grid, voxel_carving, voxel_surface = voxel_carving(mesh, output_voxel_filename, camera_path, cubic_size, voxel_resolution)
 
@@ -217,13 +220,9 @@ voxel_write = {
         "voxel_edge": cubic_size/voxel_resolution*mesh_scale,
         "voxel_matrix" : np.array(voxel_matrix, dtype=bool).tolist()
     } 
-# voxel_edge is the edge length for each voxel
+# voxel_edge: the edge length for each voxel
 
 
 #with open(json_filename, "w", encoding='utf-8') as f:
 #    json.dump(voxel_write, f, indent=4)
-
-#np.save(file=np_file,arr=np.array(voxel_matrix, dtype=bool))
-
-
 
