@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 
 #input array to visualize
-voxel_surface = np.load('data/bunny_flipped_2_voxel_surface.npy')
-voxel_inside = np.load('data/bunny_flipped_2_voxel_int.npy')
+voxel_surface = np.load('data/bunny_flipped_3_voxel_surface.npy')
+voxel_inside = np.load('data/bunny_flipped_3_voxel_int.npy')
 
 voxels = voxel_inside+voxel_surface
 print('voxels', voxels.shape)

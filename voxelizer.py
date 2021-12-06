@@ -148,13 +148,13 @@ def center_of_mass(voxels_np):
     return([int(center[0]),int(center[1]),int(center[2])]) 
     
 
-mesh_path = "./data/bunny_flipped_2.obj"
+mesh_path = "./data/bunny_flipped_3.obj"
 mesh = o3d.io.read_triangle_mesh(mesh_path)
-output_voxel_filename = os.path.abspath("./data/bunny_flipped_2_voxelized.obj")
-output_mesh_filename =os.path.abspath("./data/bunny_flipped_2_scaled.obj")
+output_voxel_filename = os.path.abspath("./data/bunny_flipped_3_voxelized.obj")
+output_mesh_filename =os.path.abspath("./data/bunny_flipped_3_scaled.obj")
 camera_path = os.path.abspath("./data/sphere.ply")
-np_file = "./data/bunny_flipped_2_voxel"
-json_filename = "./data/bunny_flipped_2_voxel.json"
+np_file = "./data/bunny_flipped_3_voxel"
+json_filename = "./data/bunny_flipped_3_voxel.json"
 
 visualization = True
 cubic_size = 2.56 # 64 * 0.04
@@ -172,7 +172,7 @@ o3d.io.write_triangle_mesh(output_mesh_filename, mesh)
 
 #pdb.set_trace()
 
-"""
+
 print("surface mesh")
 print(mesh)
 o3d.visualization.draw_geometries([mesh])
@@ -180,7 +180,7 @@ o3d.visualization.draw_geometries([mesh])
 print("surface voxels")
 print(voxel_surface)
 o3d.visualization.draw_geometries([voxel_surface])
-
+"""
 print("carved voxels")
 print(voxel_carving)
 o3d.visualization.draw_geometries([voxel_carving])
@@ -206,8 +206,8 @@ voxel_matrix = voxel_to_numpy(voxel_grid, voxel_resolution = N_index)
 
 print("The carving debugging: ")
 inside, surface = voxel_carv_preprocess_numpy(voxel_matrix)
-np.save(file="./data/bunny_flipped_2_voxel_surface",arr=np.array(surface, dtype=bool))
-np.save(file="./data/bunny_flipped_2_voxel_int",arr=np.array(inside, dtype=bool))
+np.save(file="./data/bunny_flipped_3_voxel_surface",arr=np.array(surface, dtype=bool))
+np.save(file="./data/bunny_flipped_3_voxel_int",arr=np.array(inside, dtype=bool))
 
 
 print(" The center of mass is given by: ", center_of_mass(voxel_matrix))
