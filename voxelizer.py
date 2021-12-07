@@ -148,16 +148,17 @@ def center_of_mass(voxels_np):
 
     return([int(center[0]),int(center[1]),int(center[2])]) 
 
+#name= "rocket_flipped"
+name = "bunny_flipped_3"
 
 
-
-mesh_path = "./data/bunny_flipped_3.obj"
+mesh_path = "./data/"+name+".obj"
 mesh = o3d.io.read_triangle_mesh(mesh_path)
-output_voxel_filename = os.path.abspath("./data/bunny_flipped_3_voxelized.obj")
-output_mesh_filename =os.path.abspath("./data/bunny_flipped_3_scaled.obj")
+output_voxel_filename = os.path.abspath("./data/"+name+"_voxelized.obj")
+output_mesh_filename =os.path.abspath("./data/"+name+"_scaled.obj")
 camera_path = os.path.abspath("./data/sphere.ply")
-np_file = "./data/bunny_flipped_3_voxel"
-json_filename = "./data/bunny_flipped_3_voxel.json"
+np_file = "./data/"+name+"_voxel"
+json_filename = "./data/"+name+"_voxel.json"
 
 visualization = True
 cubic_size = 2.56 # 128 * 0.04
@@ -209,8 +210,8 @@ voxel_matrix = voxel_to_numpy(voxel_grid, voxel_resolution = N_index)
 
 print("The carving debugging: ")
 inside, surface = voxel_carv_preprocess_numpy(voxel_matrix)
-np.save(file="./data/bunny_flipped_3_voxel_surface",arr=np.array(surface, dtype=bool))
-np.save(file="./data/bunny_flipped_3_voxel_int",arr=np.array(inside, dtype=bool))
+np.save(file="./data/"+name+"_voxel_surface",arr=np.array(surface, dtype=bool))
+np.save(file="./data/"+name+"_voxel_int",arr=np.array(inside, dtype=bool))
 
 
 print(" The center of mass is given by: ", center_of_mass(voxel_matrix))

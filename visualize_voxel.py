@@ -19,9 +19,12 @@ def center_of_mass(voxels_np):
 
     return([int(center[0]),int(center[1]),int(center[2])]) 
 
+#name= 'rocket_flipped'
+name = "bunny_flipped_3"
+
 #input array to visualize
-voxel_surface = np.load('data/bunny_flipped_3_voxel_surface.npy')
-voxel_inside = np.load('data/bunny_flipped_3_voxel_int_carved.npy')
+voxel_surface = np.load('data/'+name+'_voxel_surface.npy')
+voxel_inside = np.load('data/'+name+'_voxel_int.npy')
 
 voxels = voxel_inside + voxel_surface
 
