@@ -46,13 +46,13 @@ def support_base(voxels_np):
             min_z = np.min(support_index[1])
             center = np.array([int((max_x+min_x)/2), int((min_z+max_z)/2)])
             scaled_support_base = np.full((grid_shape[0],grid_shape[2]),False)
-            scaled_support_base[center[0]-7:center[0]+7,center[1]-3:center[1]+3] = True
-            if((np.logical_and(scaled_support_base,support_base)==scaled_support_base).all()):
-                print("Support base is reasonable!!")
-                return scaled_support_base
-
+            #Here we manually set the size for the support base
+            #This is chosen purely from intuition and it is possible that there are better choices.
+            scaled_support_base[center[0]-6:center[0]+5,center[1]-3:center[1]+3] = True
+            #make the check whether the support base is really in the slice and not outside.
+            
             ############ Visualization for support base!!!
-            """
+            
             visual = np.full((grid_shape[0],grid_shape[1],grid_shape[2]),False)
             visual_sb = np.full((grid_shape[0],grid_shape[1],grid_shape[2]),False)
             colors = np.empty(grid_shape, dtype=object)
@@ -64,7 +64,12 @@ def support_base(voxels_np):
             ax.voxels(visual,facecolors = colors, edgecolor='k')
             plt.show()
             #############
-            """
+
+            if((np.logical_and(scaled_support_base,support_base)==scaled_support_base).all()):
+                print("Support base is reasonable!!")
+                return scaled_support_base
+
+            
 
 
 def carving(voxel_surface,voxel_inside,support_base):
@@ -172,8 +177,9 @@ voxel_inside = np.load('data/bunny_flipped_3_voxel_int.npy')
 voxels = voxel_inside + voxel_surface
 scaled_support_base = support_base(voxels)
 carved_voxel_inside = carving(voxel_surface,voxel_inside,scaled_support_base)
+entire_bunny_carved = voxel_surface + carved_voxel_inside
 np.save(file="./data/bunny_flipped_3_voxel_int_carved",arr=np.array(carved_voxel_inside, dtype=bool))
-
+np.save(file="./data/bunny_flipped_3_voxel_entire_carved",arr=np.array(entire_bunny_carved, dtype=bool))
 
 
 

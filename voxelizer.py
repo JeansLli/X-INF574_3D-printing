@@ -160,7 +160,7 @@ np_file = "./data/bunny_flipped_3_voxel"
 json_filename = "./data/bunny_flipped_3_voxel.json"
 
 visualization = True
-cubic_size = 2.56 # 64 * 0.04
+cubic_size = 2.56 # 128 * 0.04
 voxel_resolution = 128.0 #
 mesh_scale = 10.0
 
