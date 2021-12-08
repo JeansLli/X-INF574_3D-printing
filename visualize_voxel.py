@@ -19,8 +19,8 @@ def center_of_mass(voxels_np):
 
     return([int(center[0]),int(center[1]),int(center[2])]) 
 
-#name= 'rocket_flipped'
-name = "bunny_flipped_3"
+name= 'rocket_flipped'
+#name = "bunny_flipped_3"
 
 #input array to visualize
 voxel_surface = np.load('data/'+name+'_voxel_surface.npy')
@@ -35,14 +35,14 @@ print('voxels', voxels.shape)
 print('voxel occ', np.count_nonzero(voxels==True))
 
 
-voxels[:,:,:com[2]] = np.full((128,128,com[2]),False)
+voxels[:,:,:com[2]] = np.full((256,256,com[2]),False)
 # prepare some coordinates
 
 #print('mass total', np.count_nonzero(voxels==True))
 print('mass interior', np.count_nonzero(voxel_inside==True))
 # draw cuboids in the top left and bottom right corners, and a link between
 # them
-ctr = np.full((128,128,128),False)
+ctr = np.full((256,256,256),False)
 ctr[com[0],com[1],com[2]]=True
 
 

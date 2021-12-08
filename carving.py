@@ -48,7 +48,7 @@ def support_base(voxels_np):
             scaled_support_base = np.full((grid_shape[0],grid_shape[2]),False)
             #Here we manually set the size for the support base
             #This is chosen purely from intuition and it is possible that there are better choices.
-            scaled_support_base[center[0]-6:center[0]+5,center[1]-3:center[1]+3] = True
+            scaled_support_base[center[0]-9:center[0]+10,center[1]-6:center[1]+6] = True
             #make the check whether the support base is really in the slice and not outside.
             """
             ############ Visualization for support base!!!
@@ -84,6 +84,16 @@ def carving(voxel_surface,voxel_inside,support_base):
     com = center_of_mass(voxel_surface+voxel_inside) 
     com_x = com[0]
     com_z = com[2]
+    
+    print("com_x=",com_x)
+    print("com_z=",com_z)
+    print("min_x=",min_x)
+    print("max_x=",max_x)
+    print("min_z=",min_z)
+    print("max_z=",max_z)
+    
+    print("================")
+
     if(com_x>=min_x and com_x<=max_x and com_z>=min_z and com_z<=max_z):
         return carved_voxel_inside
     # to move com_x, cut y-z plane
@@ -98,8 +108,9 @@ def carving(voxel_surface,voxel_inside,support_base):
                 continue
             else:
                 cut_x = i
+                print('entered')
                 break
-               
+            
         while(com_x<min_x and cut_x<grid_shape[0]):
             print("com_x=",com_x)
             print("min_x=",min_x)
@@ -124,8 +135,18 @@ def carving(voxel_surface,voxel_inside,support_base):
                 break
 
         while(com_x>max_x and cut_x>=0):
-            carved_voxel_inside[cut_x,:,:]=False
-            cut_x+=1
+            print("com_x=",com_x)
+            print("min_x=",min_x)
+            print("max_x =",max_x)
+            print("cut_x=",cut_x)
+            print("com_z=",com_z)
+            print("================")
+            if(np.abs(com_x-max_x)>0 and np.abs(cut_x-max_x)>10):
+                carved_voxel_inside[cut_x-5:cut_x,:,:]=False
+                cut_x-=5
+            else:
+                carved_voxel_inside[cut_x,:,:]=False
+                cut_x-=1
             com = center_of_mass(voxel_surface+carved_voxel_inside) 
             com_x = com[0]
             com_z = com[2]
@@ -169,8 +190,8 @@ def carving(voxel_surface,voxel_inside,support_base):
 
     return carved_voxel_inside
 
-#name= 'rocket_flipped'
-name = "bunny_flipped_3"
+name= 'rocket_flipped'
+#name = "bunny_flipped_3"
 
 voxel_surface = np.load('data/'+name+'_voxel_surface.npy')
 voxel_inside = np.load('data/'+name+'_voxel_int.npy')
