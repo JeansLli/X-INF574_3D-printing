@@ -5,8 +5,8 @@ import numpy as np
 
 if __name__ == '__main__':
 
-    voxel_numpy = np.load('data/rocket_flipped_voxel_entire_carved.npy')
+    voxel_numpy = np.load('data/pinecone_flipped_voxel_entire_carved.npy')
     model = VoxelModel(voxel_numpy, generateMaterials(4))
     mesh = Mesh.fromVoxelModel(model)
-    mesh.export('rocket_flipped_carved.stl')
+    mesh.export('pinecone_flipped_carved.stl')
     

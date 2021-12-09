@@ -148,7 +148,8 @@ def center_of_mass(voxels_np):
 
     return([int(center[0]),int(center[1]),int(center[2])]) 
 
-name= "rocket_flipped"
+#name= "rocket_flipped"
+name= "pinecone_flipped"
 #name = "bunny_flipped_3"
 
 
@@ -162,7 +163,7 @@ json_filename = "./data/"+name+"_voxel.json"
 
 visualization = True
 cubic_size = 2.56 # 128 * 0.04
-voxel_resolution = 256.0 #
+voxel_resolution = 160.0 #
 mesh_scale = 10.0
 
 mesh, voxel_grid, voxel_carving, voxel_surface = voxel_carving(mesh, output_voxel_filename, camera_path, cubic_size, voxel_resolution)

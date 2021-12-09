@@ -48,7 +48,7 @@ def support_base(voxels_np):
             scaled_support_base = np.full((grid_shape[0],grid_shape[2]),False)
             #Here we manually set the size for the support base
             #This is chosen purely from intuition and it is possible that there are better choices.
-            scaled_support_base[center[0]-9:center[0]+10,center[1]-6:center[1]+6] = True
+            scaled_support_base[center[0]-10:center[0]+10,center[1]-5:center[1]+5] = True
             #make the check whether the support base is really in the slice and not outside.
             """
             ############ Visualization for support base!!!
@@ -167,6 +167,12 @@ def carving(voxel_surface,voxel_inside,support_base):
             com = center_of_mass(voxel_surface+carved_voxel_inside) 
             com_x = com[0]
             com_z = com[2]
+            print("com_x=",com_x)
+            print("com_z=",com_z)
+            print("min_z=",min_z)
+            print("cut_z=",cut_z)
+            
+            print("================")
 
     if(com_z>max_z):
         for i in range(grid_shape[2]):
@@ -190,7 +196,8 @@ def carving(voxel_surface,voxel_inside,support_base):
 
     return carved_voxel_inside
 
-name= 'rocket_flipped'
+#name= 'rocket_flipped'
+name='pinecone_flipped'
 #name = "bunny_flipped_3"
 
 voxel_surface = np.load('data/'+name+'_voxel_surface.npy')
