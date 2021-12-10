@@ -36,7 +36,7 @@ def support_base(voxels_np):
     
     for id_y in range(grid_shape[1]):
         if(np.count_nonzero(voxels_np[:,id_y,:]==True)>0):
-            id_y+=1 #NOTE: After visualization, second floor is connected
+            #id_y+=1 #NOTE: After visualization, second floor is connected
             support_base = voxels_np[:,id_y,:]
             support_index = np.nonzero(support_base)
             #pdb.set_trace()
@@ -164,8 +164,12 @@ def carving(voxel_surface,voxel_inside,support_base):
                 break
 
         while(com_z<min_z and cut_z<grid_shape[0]):
-            carved_voxel_inside[:,:,cut_z]=False
-            cut_z+=1
+            if((min_z-com_z>2) and (min_z-cut_z)>10):
+                carved_voxel_inside[:,:,cut_z:cut_z+5]=False
+                cut_z+=5
+            else:
+                carved_voxel_inside[:,:,cut_z]=False
+                cut_z+=1
             com = center_of_mass(voxel_surface+carved_voxel_inside) 
             com_x = com[0]
             com_z = com[2]
@@ -199,7 +203,7 @@ def carving(voxel_surface,voxel_inside,support_base):
     return carved_voxel_inside
 
 #name= 'rocket_flipped'
-name='rocket_turning_flipped'
+name='rocket_turning_flipped_2'
 #name = "bunny_flipped_3"
 
 voxel_surface = np.load('data/'+name+'_voxel_surface.npy')

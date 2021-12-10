@@ -151,7 +151,7 @@ def center_of_mass(voxels_np):
 #name= "rocket_flipped"
 #name= "pinecone_flipped"
 #name = "bunny_flipped_3"
-name= "rocket_turning_flipped"
+name= "rocket_turning_flipped_2"
 
 
 mesh_path = "./data/"+name+".obj"
@@ -211,7 +211,7 @@ for i in voxel_grid.get_voxels(): # index is from 1 to scale/size
 voxel_matrix = voxel_to_numpy(voxel_grid, voxel_resolution = N_index)
 
 print("The carving debugging: ")
-inside, surface = voxel_carv_preprocess_numpy(voxel_matrix)
+inside, surface = voxel_carv_preprocess_numpy(voxel_matrix, thickness=1)
 np.save(file="./data/"+name+"_voxel_surface",arr=np.array(surface, dtype=bool))
 np.save(file="./data/"+name+"_voxel_int",arr=np.array(inside, dtype=bool))
 
