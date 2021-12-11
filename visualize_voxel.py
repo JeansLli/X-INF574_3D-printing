@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+#import carving
 
 def center_of_mass(voxels_np):
     """
@@ -19,7 +20,7 @@ def center_of_mass(voxels_np):
 
     return([int(center[0]),int(center[1]),int(center[2])]) 
 
-name= 'rocket_flipped'
+name= 'christmas'
 #name = "bunny_flipped_3"
 
 #input array to visualize
@@ -27,7 +28,7 @@ voxel_surface = np.load('data/'+name+'_voxel_surface.npy')
 voxel_inside = np.load('data/'+name+'_voxel_int.npy')
 
 voxels = voxel_inside + voxel_surface
-
+#support_base = carving.support_base(voxels)
 com = center_of_mass(voxels)
 
 print('voxels', voxels.shape)

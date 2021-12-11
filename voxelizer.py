@@ -149,9 +149,9 @@ def center_of_mass(voxels_np):
     return([int(center[0]),int(center[1]),int(center[2])]) 
 
 #name= "rocket_flipped"
-#name= "pinecone_flipped"
+name= "bunny_final"
 #name = "bunny_flipped_3"
-name= "rocket_turning_flipped_2"
+#name= "rocket_turning_flipped_2"
 
 
 mesh_path = "./data/"+name+".obj"
@@ -164,9 +164,11 @@ json_filename = "./data/"+name+"_voxel.json"
 
 visualization = True
 cubic_size = 2.56 # 128 * 0.04
-voxel_resolution = 200.0 #
+voxel_resolution = 256.0 #
 mesh_scale = 10.0
-
+print("surface mesh")
+print(mesh)
+o3d.visualization.draw_geometries([mesh])
 mesh, voxel_grid, voxel_carving, voxel_surface = voxel_carving(mesh, output_voxel_filename, camera_path, cubic_size, voxel_resolution)
 
 # We can directly zoom out mesh a little bit 
@@ -179,9 +181,7 @@ o3d.io.write_triangle_mesh(output_mesh_filename, mesh)
 #pdb.set_trace()
 
 
-print("surface mesh")
-print(mesh)
-o3d.visualization.draw_geometries([mesh])
+
 
 print("surface voxels")
 print(voxel_surface)

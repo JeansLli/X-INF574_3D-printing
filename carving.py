@@ -48,8 +48,9 @@ def support_base(voxels_np):
             scaled_support_base = np.full((grid_shape[0],grid_shape[2]),False)
             #Here we manually set the size for the support base
             #This is chosen purely from intuition and it is possible that there are better choices.
-            scaled_support_base[center[0]-5:center[0]+5,center[1]-2:center[1]+2] = True
-            #make the check whether the support base is really in the slice and not outside.
+            scaled_support_base[center[0]-1:center[0]+1,center[1]:center[1]+1] = True
+            #make the check whether the support ba
+            # se is really in the slice and not outside.
             
             """
             ############ Visualization for support base!!!
@@ -69,6 +70,8 @@ def support_base(voxels_np):
             #pdb.set_trace()
             if((np.logical_and(scaled_support_base,support_base)==scaled_support_base).all()):
                 print("Support base is reasonable!!")
+
+                
                 return scaled_support_base
 
             
@@ -119,9 +122,12 @@ def carving(voxel_surface,voxel_inside,support_base):
             print("cut_x=",cut_x)
             print("com_z=",com_z)
             print("================")
-
-            carved_voxel_inside[cut_x,:,:]=False
-            cut_x+=1
+            if((min_x-com_x>0) ):
+                carved_voxel_inside[cut_x:cut_x+5,:,:]=False
+                cut_x+=5
+            else:
+                carved_voxel_inside[cut_x,:,:]=False
+                cut_x+=1
             com = center_of_mass(voxel_surface+carved_voxel_inside) 
             com_x = com[0]
             com_z = com[2]
@@ -144,7 +150,7 @@ def carving(voxel_surface,voxel_inside,support_base):
             print("com_z=",com_z)
             print("================")
             if(np.abs(com_x-max_x)>0 and np.abs(cut_x-max_x)>10):
-                carved_voxel_inside[cut_x-5:cut_x,:,:]=False
+                carved_voxel_inside[cut_x-5:cut_x+1,:,:]=False
                 cut_x-=5
             else:
                 carved_voxel_inside[cut_x,:,:]=False
@@ -164,7 +170,7 @@ def carving(voxel_surface,voxel_inside,support_base):
                 break
 
         while(com_z<min_z and cut_z<grid_shape[0]):
-            if((min_z-com_z>2) and (min_z-cut_z)>10):
+            if((min_z-com_z>0) and (min_z-cut_z)>4):
                 carved_voxel_inside[:,:,cut_z:cut_z+5]=False
                 cut_z+=5
             else:
@@ -190,11 +196,23 @@ def carving(voxel_surface,voxel_inside,support_base):
                 break
         
         while(com_z>max_z and cut_z>=0):
-            carved_voxel_inside[:,:,cut_z]=False
-            cut_z+=1
+            if((com_z-max_z>1)):
+                carved_voxel_inside[:,:,cut_z-5:cut_z+1]=False
+                cut_z-=5
+            else:
+                carved_voxel_inside[:,:,cut_z]=False
+                cut_z-=1
+            
             com = center_of_mass(voxel_surface+carved_voxel_inside) 
             com_x = com[0]
             com_z = com[2]
+
+            print("com_x=",com_x)
+            print("com_z=",com_z)
+            print("max_z=",max_z)
+            print("cut_z=",cut_z)
+            
+            print("================")
 
     if (com_x >=min_x and com_x <=max_x and com_z >=min_z and com_z <=max_z):
         print("Carving is successful! The new center of mass is in the support base!")
@@ -203,8 +221,9 @@ def carving(voxel_surface,voxel_inside,support_base):
     return carved_voxel_inside
 
 #name= 'rocket_flipped'
-name='rocket_turning_flipped_2'
+#name='rocket_turning_flipped_2'
 #name = "bunny_flipped_3"
+name = "bunny_final"
 
 voxel_surface = np.load('data/'+name+'_voxel_surface.npy')
 voxel_inside = np.load('data/'+name+'_voxel_int.npy')
