@@ -11,11 +11,11 @@
 9. Repeat from step 4 and step 8 until convergence.
 
 
-##Voxelization of the 3d model##
+## Voxelization of the 3d model
 
 Give your 3d shape some name and specify the path of your .obj in the voxelizer.py file. You can adapt the number of voxels with the variable voxel_resolution in the voxelizer.py file. Note that a large number of voxels slow down the computation a lot.
 
-##Support Base for the carved model##
+## Support Base for the carved model
 If the voxelization was successful you have by now in the data folder a saved numpy array of size voxel_resolution x voxel_resolution x voxel_resolution. Next you need to run the carving.py file. You do not need to worry about the name and paths of the models and numpy arrays. Just give the variable "name" the same value as in voxelizer.py.
 
 Note that you can change the size of the support base. In carving.py in line 51 you can change the line 
